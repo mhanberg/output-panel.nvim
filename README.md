@@ -2,7 +2,7 @@
 
 A panel to view the logs from your LSP servers.
 
-TODO: Screenshot
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/5523984/231956595-5ebc8060-b408-49df-979d-7b6db62f284e.png">
 
 ## Install
 
