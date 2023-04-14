@@ -7,7 +7,7 @@ local tabs = {}
 local M = {}
 
 function M.winbar()
-  local tab = ""
+  local tab = "Output Panel "
   for i, name in ipairs(tabs) do
     local hl
     if name == current_tab then
