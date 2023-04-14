@@ -58,7 +58,7 @@ end
 
 function M.setup()
   vim.api.nvim_create_user_command("OutputPanel", function()
-    if output_panel_winid then
+    if output_panel_winid and vim.tbl_contains(vim.api.nvim_list_wins(), output_panel_winid) then
       vim.api.nvim_win_close(output_panel_winid, true)
       output_panel_winid = nil
     else
