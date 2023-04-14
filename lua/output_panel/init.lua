@@ -40,6 +40,7 @@ function M.panel()
 
   vim.api.nvim_win_set_buf(0, output_panel_bufnr)
   vim.api.nvim_win_set_height(0, 30)
+  vim.opt_local.filetype = "OutputPanel"
   vim.wo.number = false
   vim.wo.scrolloff = 0
   vim.wo.winbar = [[%{%v:lua.require('output_panel').winbar()%}]]
