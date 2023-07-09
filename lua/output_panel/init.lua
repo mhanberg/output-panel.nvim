@@ -1,60 +1,63 @@
-local lines_by_lsp = {}
-local output_panel_bufnr
 local output_panel_winid
 local current_tab
 local tabs = {}
+
+local P = {}
+
+function P.create_tab(name)
+  if not tabs[name] then
+    local bufnr = vim.api.nvim_create_buf(false, true)
+    vim.bo[bufnr].ft = "outputpanel"
+    local tab = { id = #vim.tbl_keys(tabs) + 1, bufnr = bufnr }
+    tabs[name] = tab
+
+    if not current_tab then
+      current_tab = name
+    end
+  end
+  for _, t in pairs(tabs) do
+    for tname, tb in pairs(tabs) do
+      vim.keymap.set("n", tostring(tb.id), function()
+        current_tab = tname
+        vim.api.nvim_set_current_buf(tb.bufnr)
+        vim.wo.winbar = [[%{%v:lua.require('output_panel').winbar()%}]]
+      end, { buffer = t.bufnr })
+    end
+  end
+
+  P.create_tab(coroutine.yield(tabs[name]))
+end
+
+local create_tab = coroutine.wrap(P.create_tab)
 
 local M = {}
 
 function M.winbar()
   local tab = "Output Panel "
-  for i, name in ipairs(tabs) do
+  for name, t in pairs(tabs) do
     local hl
     if name == current_tab then
       hl = "%#Visual#"
     else
       hl = "%#Normal#"
     end
-    tab = tab .. " " .. hl .. " " .. name .. " (" .. tostring(i) .. ") " .. "%#Normal#"
+    tab = tab .. " " .. hl .. " " .. name .. " (" .. tostring(t.id) .. ") " .. "%#Normal#"
   end
 
   return tab
 end
 
 function M.panel()
-  if not output_panel_bufnr then
-    local names = vim.tbl_keys(lines_by_lsp)
-    current_tab = current_tab or names[1]
-
-    output_panel_bufnr = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_name(output_panel_bufnr, "Output Panel")
-    for i, tab in ipairs(tabs) do
-      vim.keymap.set("n", tostring(i), function()
-        current_tab = tab
-        M.render()
-      end, { buffer = output_panel_bufnr })
-    end
-  end
-
   vim.cmd.split()
 
-  vim.api.nvim_win_set_buf(0, output_panel_bufnr)
+  local tab = tabs[current_tab] or { id = 0, bufnr = vim.api.nvim_create_buf(false, true) }
+
+  vim.api.nvim_win_set_buf(0, tab.bufnr)
   vim.api.nvim_win_set_height(0, 30)
-  vim.bo[output_panel_bufnr].ft = "outputpanel"
   vim.wo.number = false
   vim.wo.scrolloff = 0
   vim.wo.winbar = [[%{%v:lua.require('output_panel').winbar()%}]]
   output_panel_winid = vim.api.nvim_get_current_win()
-  M.render()
-end
-
-function M.render()
-  if output_panel_bufnr and current_tab and not vim.tbl_isempty(lines_by_lsp) then
-    local lines = {}
-
-    vim.list_extend(lines, lines_by_lsp[current_tab])
-    vim.api.nvim_buf_set_lines(output_panel_bufnr, 0, -1, false, lines)
-  end
 end
 
 function M.setup()
@@ -71,28 +74,13 @@ function M.setup()
     if not err then
       local client_id = context.client_id
       local client = vim.lsp.get_client_by_id(client_id)
-
-      if not current_tab then
-        current_tab = client.name
-      end
-
-      if not lines_by_lsp[client.name] then
-        lines_by_lsp[client.name] = {}
-        vim.list_extend(tabs, { client.name })
-
-        if output_panel_bufnr then
-          vim.keymap.set("n", tostring(#tabs), function()
-            current_tab = client.name
-            M.render()
-          end, { buffer = output_panel_bufnr })
-        end
-      end
+      local tab = create_tab(client.name)
 
       local message = vim.split("[" .. vim.lsp.protocol.MessageType[result.type] .. "] " .. result.message, "\n")
 
-      vim.list_extend(lines_by_lsp[client.name], message)
+      local bufnr = tab.bufnr
 
-      M.render()
+      vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, message)
     end
   end
 end
