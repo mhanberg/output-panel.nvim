@@ -34,14 +34,20 @@ local M = {}
 
 function M.winbar()
   local tab = "Output Panel "
-  for name, t in pairs(tabs) do
+
+  local names =  vim.tbl_keys(tabs)
+  table.sort(names, function(a, b)
+    return tabs[a].id < tabs[b].id
+  end)
+
+  for _, name in ipairs(names) do
     local hl
     if name == current_tab then
       hl = "%#Visual#"
     else
       hl = "%#Normal#"
     end
-    tab = tab .. " " .. hl .. " " .. name .. " (" .. tostring(t.id) .. ") " .. "%#Normal#"
+    tab = tab .. " " .. hl .. " " .. name .. " (" .. tostring(tabs[name].id) .. ") " .. "%#Normal#"
   end
 
   return tab
@@ -74,13 +80,15 @@ function M.setup()
     if not err then
       local client_id = context.client_id
       local client = vim.lsp.get_client_by_id(client_id)
-      local tab = create_tab(client.name)
+      if client then
+        local tab = create_tab(client.name)
 
-      local message = vim.split("[" .. vim.lsp.protocol.MessageType[result.type] .. "] " .. result.message, "\n")
+        local message = vim.split("[" .. vim.lsp.protocol.MessageType[result.type] .. "] " .. result.message, "\n")
 
-      local bufnr = tab.bufnr
+        local bufnr = tab.bufnr
 
-      vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, message)
+        vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, message)
+      end
     end
   end
 end
