@@ -39,4 +39,4 @@ jobs:
           luaVersion: "5.1.5"
       - uses: leafo/gh-actions-luarocks@v4
       - name: Run nvim-test tests
-        run: nix shell nixpkgs#bash nixpkgs#just -c just test
+        run: nix shell nixpkgs#bash nixpkgs#just -c just test ${{ nvim-version }}
