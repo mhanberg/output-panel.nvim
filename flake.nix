@@ -11,11 +11,12 @@
       systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
       perSystem = {pkgs, ...}: {
         devShells.default = pkgs.mkShell {
-          packages = [
-            pkgs.luarocks
-            pkgs.lua5_1
-            pkgs.just
-            pkgs.stylua
+          packages = with pkgs; [
+            bash
+            luarocks
+            lua5_1
+            just
+            stylua
           ];
         };
       };

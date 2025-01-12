@@ -32,10 +32,7 @@ jobs:
         nvim-version: [v0.8.3, v0.9.5, v0.10.3]
     steps:
       - uses: actions/checkout@v4
-      - uses: extractions/setup-just@v2
-      - uses: leafo/gh-actions-lua@v10
-        with:
-          luaVersion: "5.1.5"
-      - uses: leafo/gh-actions-luarocks@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Run nvim-test tests
-        run: just test ${{ matrix.nvim-version }}
+        run: nix develop -c just test ${{ matrix.nvim-version }}
