@@ -34,8 +34,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
-      - name: thing
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: sudo apt-get install libc6-dev
+      - uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.1.5"
+      - uses: leafo/gh-actions-luarocks@v4
       - name: Run nvim-test tests
-        run: nix develop -c just test ${{ matrix.nvim-version }}
+        run: nix shell nixpkgs#bash nixpkgs#just -c just test
