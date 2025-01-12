@@ -12,6 +12,7 @@
       perSystem = {pkgs, ...}: {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
+            gcc
             bash
             luarocks
             lua5_1
