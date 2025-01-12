@@ -1,0 +1,56 @@
+name: Tests
+
+on: [push, pull_request]
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  stylua:
+    name: Stylua
+    runs-on: ubuntu-latest
+
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true)
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
+          args: --check .
+
+  tests:
+    name: tests
+    runs-on: ${{ matrix.os }}
+
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true)
+
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-20.04
+            manager: sudo apt-get
+            packages: -y fd-find esl-erlang elixir
+            nvim-version: v0.8.3
+          - os: ubuntu-20.04
+            manager: sudo apt-get
+            packages: -y fd-find esl-erlang elixir
+            nvim-version: v0.9.5
+          - os: macos-14
+            manager: brew
+            packages: fd elixir
+            nvim-version: v0.8.3
+          - os: macos-14
+            manager: brew
+            packages: fd elixir
+            nvim-version: v0.9.5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: extractions/setup-just@v2
+      - uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.1.5"
+      - uses: leafo/gh-actions-luarocks@v4
+      - name: Run nvim-test tests
+        run: just test ${{ matrix.nvim-version }}
