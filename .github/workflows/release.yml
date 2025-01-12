@@ -11,8 +11,6 @@ permissions:
 jobs:
   release:
     name: release
-    needs:
-      - docs
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
