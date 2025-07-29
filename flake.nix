@@ -23,7 +23,7 @@
       }: {
         packages.default = pkgs.vimUtils.buildVimPlugin {
           pname = "output-panel-nvim";
-          version = "unstable";
+          version = "1.0.0";
           src = self;
         };
         devShells.default = pkgs.mkShell {
