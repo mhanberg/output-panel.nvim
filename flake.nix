@@ -25,24 +25,15 @@
           pname = "output-panel-nvim";
           version = "unstable";
           src = self;
-          # dependencies = with pkgs.vimPlugins; [
-          #   nui-nvim
-          #   nvim-dap
-          #   nvim-nio
-          #   nvim-dap-virtual-text
-          #   noice-nvim
-          # ];
-          nvimSkipModule = [
+        };
+        devShells.default = pkgs.mkShell {
+          packages = with pkgs; [
+            bash
+            luarocks
+            lua5_1
+            just
+            stylua
           ];
-          devShells.default = pkgs.mkShell {
-            packages = with pkgs; [
-              bash
-              luarocks
-              lua5_1
-              just
-              stylua
-            ];
-          };
         };
       };
     };
