@@ -34,6 +34,15 @@
           # ];
           nvimSkipModule = [
           ];
+          devShells.default = pkgs.mkShell {
+            packages = with pkgs; [
+              bash
+              luarocks
+              lua5_1
+              just
+              stylua
+            ];
+          };
         };
       };
     };
