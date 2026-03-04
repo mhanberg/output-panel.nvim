@@ -64,3 +64,30 @@ make the buffer overflow]])
     }, lines)
   end)
 end)
+describe("output panel", function()
+  before_each(function()
+    helpers.clear()
+
+    exec_lua([[
+      vim.opt.rtp:append'.'
+      vim.lsp.get_client_by_id = function()
+        return {name = "foobar lsp"}
+      end
+      require('output_panel').setup({max_buffer_size = 5000})
+    ]])
+
+    log("this is a really\nmessage\nthat everyone should see")
+  end)
+
+  it("should work even with a ton of logs", function()
+    for i = 1, 100000, 1 do
+      log("this is a really\nmessage\nthat everyone should see" .. i)
+    end
+    local lines = exec_lua([[
+      vim.cmd.OutputPanel()
+      return vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    ]])
+
+    eq(#lines, 5000)
+  end)
+end)

@@ -28,6 +28,8 @@
         };
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
+            alejandra
+            wget
             bash
             luarocks
             lua5_1
