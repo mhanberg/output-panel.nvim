@@ -2,7 +2,7 @@ deps:
   #!/usr/bin/env bash
   set -euo pipefail
   if [ ! -d "nvim-test" ]; then
-    git clone --depth 1 --branch v1.1.1 https://github.com/lewis6991/nvim-test
+    git clone --depth 1 --branch v1.3.0 https://github.com/lewis6991/nvim-test
   fi
 
 init: deps

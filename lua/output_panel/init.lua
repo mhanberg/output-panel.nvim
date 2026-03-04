@@ -25,10 +25,10 @@ function P.create_tab(name)
     end
   end
 
-  P.create_tab(coroutine.yield(tabs[name]))
+  return tabs[name]
 end
 
-local create_tab = coroutine.wrap(P.create_tab)
+-- local create_tab = coroutine.wrap(P.create_tab)
 
 local M = {}
 
@@ -82,7 +82,7 @@ function M.setup(opts)
       local client_id = context.client_id
       local client = vim.lsp.get_client_by_id(client_id)
       if client then
-        local tab = create_tab(client.name)
+        local tab = P.create_tab(client.name)
 
         local message =
           vim.split("[" .. vim.lsp.protocol.MessageType[result.type] .. "] " .. result.message, "\n")
