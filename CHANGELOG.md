@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/mhanberg/output-panel.nvim/compare/v1.0.0...v1.0.1) (2026-03-04)
+
+
+### Bug Fixes
+
+* don't crash after many logs ([#15](https://github.com/mhanberg/output-panel.nvim/issues/15)) ([9355ddd](https://github.com/mhanberg/output-panel.nvim/commit/9355ddd2512550503c69fd583cd80477d441c919)), closes [#5](https://github.com/mhanberg/output-panel.nvim/issues/5)
+
 ## 1.0.0 (2025-01-12)
 
 
