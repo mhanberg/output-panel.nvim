@@ -29,7 +29,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-14]
-        nvim-version: [v0.8.3, v0.9.5, v0.10.4]
+        nvim-version: [v0.8.3, v0.9.5, v0.10.4, v0.11.6]
     steps:
       - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@main
