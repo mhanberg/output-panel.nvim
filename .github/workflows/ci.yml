@@ -13,8 +13,8 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true)
 
     steps:
-      - uses: actions/checkout@v6
-      - uses: JohnnyMorganz/stylua-action@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: JohnnyMorganz/stylua-action@479972f01e665acfcba96ada452c36608bdbbb5e # v4.1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
@@ -31,12 +31,12 @@ jobs:
         os: [ubuntu-latest, macos-14]
         nvim-version: [v0.8.3, v0.9.5, v0.10.4, v0.11.6]
     steps:
-      - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@v21
-      - uses: DeterminateSystems/magic-nix-cache-action@v13
-      - uses: leafo/gh-actions-lua@v12
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+      - uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
+      - uses: leafo/gh-actions-lua@8c9e175e7a3d77e21f809eefbee34a19b858641b # v12.0.0
         with:
           luaVersion: "5.1.5"
-      - uses: leafo/gh-actions-luarocks@v6
+      - uses: leafo/gh-actions-luarocks@97053c556d6ce2c8e26eb7ac93743437c7af7248 # v6.0.0
       - name: Run nvim-test tests
         run: nix shell nixpkgs#bash nixpkgs#just -c just test ${{ matrix.nvim-version }}
